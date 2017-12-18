@@ -492,6 +492,20 @@ public class PdfiumCore {
         return new RectF(leftTop.x, leftTop.y, rightBottom.x, rightBottom.y);
     }
 
+    /**
+     * @see PdfiumCore#mapDeviceCoordsToPage(PdfDocument, int, int, int, int, int, int, int, int)
+     * @return mapped coordinates
+     */
+    public RectF mapRectToPage(PdfDocument doc, int pageIndex, int startX, int startY, int sizeX,
+                                 int sizeY, int rotate, RectF coords) {
+
+        PointF leftTop = mapDeviceCoordsToPage(doc, pageIndex, startX, startY, sizeX, sizeY, rotate,
+                (int)coords.left, (int)coords.top);
+        PointF rightBottom = mapDeviceCoordsToPage(doc, pageIndex, startX, startY, sizeX, sizeY, rotate,
+                (int)coords.right, (int)coords.bottom);
+        return new RectF(leftTop.x, leftTop.y, rightBottom.x, rightBottom.y);
+    }
+
     public long openTextPage(PdfDocument doc, int pageIndex) {
         long textPagePtr;
         synchronized (lock) {

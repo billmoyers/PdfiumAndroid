@@ -3,6 +3,7 @@ package com.shockwave.pdfium;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Point;
+import android.graphics.PointF;
 import android.graphics.RectF;
 import android.os.ParcelFileDescriptor;
 import android.util.Log;
@@ -116,6 +117,9 @@ public class PdfiumCore {
 
     private native Point nativePageCoordsToDevice(long pagePtr, int startX, int startY, int sizeX,
                                                   int sizeY, int rotate, double pageX, double pageY);
+
+    private native PointF nativeDeviceCoordsToPage(long pagePtr, int startX, int startY, int sizeX,
+                                                   int sizeY, int rotate, int deviceX, int deviceY);
 
 
     /* synchronize native methods */
@@ -451,6 +455,27 @@ public class PdfiumCore {
                                        int sizeY, int rotate, double pageX, double pageY) {
         long pagePtr = doc.mNativePagesPtr.get(pageIndex);
         return nativePageCoordsToDevice(pagePtr, startX, startY, sizeX, sizeY, rotate, pageX, pageY);
+    }
+
+    /**
+     * Map device screen coordinates to page coordinates
+     *
+     * @param doc       pdf document
+     * @param pageIndex index of page
+     * @param startX    left pixel position of the display area in device coordinates
+     * @param startY    top pixel position of the display area in device coordinates
+     * @param sizeX     horizontal size (in pixels) for displaying the page
+     * @param sizeY     vertical size (in pixels) for displaying the page
+     * @param rotate    page orientation: 0 (normal), 1 (rotated 90 degrees clockwise),
+     *                  2 (rotated 180 degrees), 3 (rotated 90 degrees counter-clockwise)
+     * @param deviceX   X value in page coordinates
+     * @param deviceY   Y value in page coordinate
+     * @return mapped coordinates
+     */
+    public PointF mapDeviceCoordsToPage(PdfDocument doc, int pageIndex, int startX, int startY, int sizeX,
+                                        int sizeY, int rotate, int deviceX, int deviceY) {
+        long pagePtr = doc.mNativePagesPtr.get(pageIndex);
+        return nativeDeviceCoordsToPage(pagePtr, startX, startY, sizeX, sizeY, rotate, deviceX, deviceY);
     }
 
     /**
